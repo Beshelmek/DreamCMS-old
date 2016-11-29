@@ -4,3 +4,9 @@
 */cache/*
 !*/cache/index.html
 !*/cache/.htaccess
+.idea/copyright/profiles_settings.xml
+.idea/vcs.xml
+*.xml
+admin/.idea/admin.iml
+*.xml___jb_tmp___
+.idea/DreamCMS.iml
