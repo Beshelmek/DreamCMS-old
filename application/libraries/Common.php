@@ -10,25 +10,13 @@ class Common {
         $this->CI->load->helper('url');
     }
 
-    public function getMoney()
-    {
-        $money = $this->CI->user->getAll($this->getUUID());
-        return $money['money'];
-    }
-
-    public function getRealMoney()
-    {
-        $realmoney = $this->CI->user->getAll($this->getUUID());
-        return $realmoney['realmoney'];
-    }
-
     public function getUUID()
     {
         if($this->CI->session->userdata('uuid')){
             return $this->CI->session->userdata('uuid');
         }
 
-        return '';
+        return false;
     }
 
     public function getLogin()
@@ -36,7 +24,7 @@ class Common {
         if($this->isLogged()){
             return $this->CI->user->getAll($this->getUUID())['login'];
         }
-        return '';
+        return false;
     }
 
     public function isLogged(){
@@ -44,15 +32,6 @@ class Common {
             return true;
         }
         return false;
-    }
-
-    public function isVkVerified($login){
-        return true;
-    }
-
-    public function getTheme()
-    {
-        return 'https://dreamcraft.su/assets';
     }
 
     public function showError($msg){

@@ -7,6 +7,7 @@ class Vk extends DCMS_Controller
     {
         parent::__construct();
         $this->checkAuth(true);
+        $this->load->helper('url');
     }
 
     public function index(){
@@ -27,7 +28,7 @@ class Vk extends DCMS_Controller
                 'client_id' => 5426721,
                 'client_secret' => 'DhpCqro5Bgsczdow3pS3',
                 'code' => $code,
-                'redirect_uri' => 'https://dreamcraft.su/vk/validate'
+                'redirect_uri' => site_url('vk/validate')
             );
             $json = json_decode(file_get_contents('https://oauth.vk.com/access_token' . '?' . urldecode(http_build_query($params))), true);
 

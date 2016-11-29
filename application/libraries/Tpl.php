@@ -11,19 +11,18 @@ class Tpl {
         $this->CI->load->model('server_model', 'server');
     }
 
-    public function compile($name, $data = array(), $stitle = 'DreamCraft.Su')
+    public function compile($name, $data = array(), $stitle = '')
     {
+        if(empty($stitle)) $stitle = $this->CI->dbconfig->site_title;
         $data['stitle'] = $stitle;
         $data['login'] = $this->CI->common->getLogin();
         $data['uuid'] = $this->CI->common->getUUID();
         $data['logged'] = $this->CI->common->isLogged();
-        $data['money'] = $this->CI->common->getMoney();
-        $data['realmoney'] = $this->CI->common->getRealMoney();
         $data['monitoring'] = $this->genMonitor();
         $data['isadmin'] = in_array($data['uuid'], $this->CI->dbconfig->admins);
         $data['meta'] = array(
-            'description' => 'Комплекс Minecraft серверов без вайпов с минимальными ограничениями для тебя! Начни играть прямо сейчас!',
-            'keywords' => 'Minecraft, Minecraft проект, майнкрафт проект, играть в майнкрафт, комплекс майнкрафт, комплекс серверов, Minecraft, Minecraft сервер, майнкрафт сервер, играть на проекте майнкрафта, дримкрафт, дреамкрафт, dreamcraft',
+            'description' => $this->CI->dbconfig->site_desc,
+            'keywords' => implode(', ', $this->CI->dbconfig->keywords),
             'generator' => 'DreamWebEngineV2'
         );
         $data['csrf'] = array(
@@ -39,11 +38,15 @@ class Tpl {
     }
 
     public function show_404(){
-        $this->compile('errors/404', array(), 'DreamCraft.Su - Ошибка 404');
+        header("HTTP/1.0 404 Not Found");
+        $this->compile('errors/404', array(), 'Не найдено - Ошибка 404');
+        die($this->output->get_output());
     }
 
     public function show_error($header, $message){
-        $this->compile('errors/custom', array('header' => $header, 'message' => $message), 'DreamCraft.Su - Ошибка');
+        header("HTTP/1.0 500 Application error");
+        $this->compile('errors/custom', array('header' => $header, 'message' => $message), 'Произошла ошибка');
+        die($this->output->get_output());
     }
 
     public function genMonitor(){

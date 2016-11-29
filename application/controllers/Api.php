@@ -37,7 +37,7 @@ class API extends DCMS_Controller {
         }
     }*/
 
-    public function fill(){
+    /*public function fill(){
         $this->checkAdmin();
 
         $path = '/var/www/www-root/data/www/dreamcraft.su/itempanel.csv';
@@ -55,7 +55,7 @@ class API extends DCMS_Controller {
                 'category' => 'classic'
             ));
         }
-    }
+    }*/
 
     public function syncperm(){
         $q = $this->db->get('dc_usergroups');

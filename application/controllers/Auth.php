@@ -47,7 +47,7 @@ class Auth extends DCMS_Controller {
             if(isset($data['ga_secret']) && !empty($data['ga_secret'])){
                 $this->session->set_flashdata('auth_uuid', $data['uuid']);
                 $this->common->showOK('Переадресация на страницу двухэтапной аутентификации!', array(
-                    'redirect' => 'https://dreamcraft.su/auth/ga_auth'
+                    'redirect' => site_url('auth/ga_auth')
                 ));
             }else{
                 $ses_data = array(

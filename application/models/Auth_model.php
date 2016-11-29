@@ -1,16 +1,20 @@
 <?php
 class Auth_model extends CI_Model {
 
+    protected $CI;
+
     public function __construct()
     {
         parent::__construct();
+        $this->CI =& get_instance();
     }
 
-    public function registerUser($login, $pass, $ip = '0.0.0.0', $byurl = 'Admin'){
+    public function registerUser($login, $pass, $ip = '0.0.0.0', $byurl = 'Admin', $email = ''){
+        if(empty($email)) $email = $login . '@' . $this->CI->dbconfig->email_domain;
         $data = array(
             'login' => $login,
             'password' => md5(sha1($pass)),
-            'email' => $login . '@dreamcraft.su',
+            'email' => $email,
             'reg_ip' => $ip,
             'reg_time' => time(),
             'last_time' => time(),
@@ -81,17 +85,17 @@ class Auth_model extends CI_Model {
             require_once APPPATH . 'libraries/SmtpApi.php';
 
             $key = random_string('md5');
-            $message = 'Для изменения пароля игрока '.$row['login'].', пройдите по ссылке: http://dreamcraft.su/auth/key/' . $key;
+            $message = 'Для изменения пароля игрока '.$row['login'].', пройдите по ссылке: ' . site_url('auth/key') . '/' . $key;
 
             $api = new SmtpApi();
             $aData = array(
                'html' => '',
                'text' => $message,
-               'subject' => 'DreamCraft - Смена пароля',
+               'subject' => $this->CI->dbconfig->email_title . ' - Смена пароля',
                'encoding' => 'utf8',
                'from' => array(
-                   'email' => 'votyakov1404@gmail.com',
-                   'name' => 'DreamCraft.Su',
+                   'email' => $this->CI->dbconfig->email_from,
+                   'name' => $this->CI->dbconfig->email_title,
                ),
                'to' => array(
                   array(
@@ -128,7 +132,6 @@ class Auth_model extends CI_Model {
     }
 
     public function checkIP($ip){
-        if($ip == '87.250.10.210') return false;
         $this->db->where('reg_ip', $ip);
         $query = $this->db->get('dc_members');
         if ($query->num_rows() > 0) {
@@ -186,11 +189,11 @@ class Auth_model extends CI_Model {
                 $aData = array(
                     'html' => '',
                     'text' => $message,
-                    'subject' => 'DreamCraft - Смена пароля',
+                    'subject' => $this->CI->dbconfig->email_title . ' - Смена пароля',
                     'encoding' => 'utf8',
                     'from' => array(
-                        'email' => 'votyakov1404@gmail.com',
-                        'name' => 'DreamCraft.Su',
+                        'email' => $this->CI->dbconfig->email_from,
+                        'name' => $this->CI->dbconfig->email_title,
                     ),
                     'to' => array(
                         array(
