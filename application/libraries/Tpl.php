@@ -13,28 +13,38 @@ class Tpl {
 
     public function compile($name, $data = array(), $stitle = '')
     {
+        $template = $this->CI->dbconfig->template;
         if(empty($stitle)) $stitle = $this->CI->dbconfig->site_title;
         $data['stitle'] = $stitle;
+
+        $data['tpl'] = config_item('base_url') . 'templates/' . $template . '/';
+
         $data['login'] = $this->CI->common->getLogin();
         $data['uuid'] = $this->CI->common->getUUID();
         $data['logged'] = $this->CI->common->isLogged();
+
         $data['monitoring'] = $this->genMonitor();
+
         $data['isadmin'] = in_array($data['uuid'], $this->CI->dbconfig->admins);
+
         $data['meta'] = array(
             'description' => $this->CI->dbconfig->site_desc,
             'keywords' => implode(', ', $this->CI->dbconfig->keywords),
             'generator' => 'DreamWebEngineV2'
         );
+
         $data['csrf'] = array(
             'name' => $this->CI->security->get_csrf_token_name(),
             'hash' => $this->CI->security->get_csrf_hash()
         );
         $data['fcsrf'] = '<input type="hidden" name="'.$data['csrf']['name'].'" value="'.$data['csrf']['hash'].'"/>';
+
         $data['color_opt']   = $this->CI->server->selectColor('f');
         $data['server_opt']  = $this->CI->server->selectServer();
-        $this->CI->load->view('header', $data);
-        $this->CI->load->view($name,    $data);
-        $this->CI->load->view('footer', $data);
+
+        $this->CI->load->view($template . '/header', $data);
+        $this->CI->load->view($template . '/' . $name,    $data);
+        $this->CI->load->view($template . '/footer', $data);
     }
 
     public function show_404(){
