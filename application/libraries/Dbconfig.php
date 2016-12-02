@@ -25,6 +25,9 @@ class Dbconfig {
                 if($option['checked']) return $option['name'];
             }
         }
+        if($this->data[$key]['type'] == 'boolean'){
+             return isset($this->data[$key]['value']) && !empty($this->data[$key]['value']);
+        }
         return $this->data[$key]['value'];
     }
 

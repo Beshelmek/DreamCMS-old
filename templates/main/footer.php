@@ -3,14 +3,14 @@
 <div class="col-lg-3 col-md-3 col-sm-4">
     <div class="panel panel-profile profile">
         <div class="panel-heading overflow-h">
-            <?php if (empty($login)): ?>
+            <?php if (!$logged): ?>
                 <h2 class="panel-title heading-sm pull-left">Авторизация</h2>
             <?php else: ?>
                 <h2 class="panel-title heading-sm pull-left">Профиль</h2>
             <?php endif; ?>
         </div>
         <div class="panel-body">
-            <?php if (empty($login)): ?>
+            <?php if (!$logged): ?>
                 <div class="tab-v1">
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#login" data-toggle="tab">Вход</a></li>
@@ -98,16 +98,16 @@
             <?php else: ?>
                 <ul class="list-unstyled panel-menu">
                     <li class="text-center">
-                        <img src="/skin/head/<?=$login?>" alt="<?=$login?>" class="img-thumbnail"/>
+                        <img src="/skin/head/<?=$userinfo['login']?>" alt="<?=$userinfo['login']?>" class="img-thumbnail"/>
                     </li>
                     <li>
-                        Добро пожаловать, <?=$login?>
+                        Добро пожаловать, <?=$userinfo['login']?>
                     </li>
                     <li>
-                        Ваш баланс: <span class="pull-right"><?=$money?> монет</span>
+                        Ваш баланс: <span class="pull-right"><?=$userinfo['money']?> монет</span>
                     </li>
                     <li>
-                        &nbsp;<span class="pull-right"><?=$realmoney?> рублей</span>
+                        &nbsp;<span class="pull-right"><?=$userinfo['realmoney']?> рублей</span>
                     </li>
                     <li>
                         <a href="#donate" data-toggle="modal" data-target="#modal_donate"><i class="fa fa-plus"></i>Пополнить счёт</a>

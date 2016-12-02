@@ -1,0 +1,28 @@
+.list-group-item {
+    padding: 0.45rem 1.25rem;
+}
+
+footer.page-footer {
+    margin-top: 20px;
+    /* padding-top: 20px; */
+    background-color: #3E4551;
+    color: #fff;
+}
+
+.pricing-card .price h1:before {
+    content: "";
+}
+
+.pricing-card .price h1:after {
+    content: "₽";
+    font-size: 30px;
+    position: absolute;
+    margin-left: 0.3rem;
+    margin-top: 0.7rem;
+}
+
+.pricing-card .price h1 {
+    margin-left: -1rem;
+    font-size: 3rem;
+    padding: 1.5rem;
+}

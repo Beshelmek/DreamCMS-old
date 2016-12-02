@@ -30,7 +30,6 @@ class Server_model extends CI_Model {
         $config['dbcollat'] = 'utf8_general_ci';
 
         return $this->load->database($config, TRUE);
-
     }
 
     public function getAll($server = '')
@@ -56,6 +55,18 @@ class Server_model extends CI_Model {
         return $arr;
     }
 
+    public function getDonateList()
+    {
+        $this->db->order_by('sort', 'ASC');
+        $query = $this->db->get_where('dc_servers', array('active' => 1, 'donate' => 1));
+        $arr = array();
+        foreach ($query->result_array() as $row)
+        {
+            $arr[] = $row['name'];
+        }
+        return $arr;
+    }
+
     public function selectServer()
     {
         $o = '';
@@ -73,9 +84,9 @@ class Server_model extends CI_Model {
         $a = array(1,2,3,5,6,7,8,9,'a','b','c','d','e','f');
         foreach($a as $v)
         {
-            $o .= strcasecmp($tag, $v) == 0
-                ? '<option value="&' . $v . '" class="color' . $v . '" selected="selected">Color #' . $v . '</option>'
-                : '<option value="&' . $v . '" class="color' . $v . '">Color #' . $v . '</option>';
+            $o .= strcasecmp($tag, $v) == 0 ?
+                '<option value="' . $v . '" class="color-' . $v . '" selected="selected">Color #' . $v . '</option>'
+                : '<option value="' . $v . '" class="color-' . $v . '">Color #' . $v . '</option>';
         }
         return $o;
     }

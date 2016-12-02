@@ -15,17 +15,18 @@ class Profile extends DCMS_Controller {
     public function index()
     {
         $profile = array(
-            'profile' => $this->common->getLogin(),
-            'email' => $this->userinfo['email'],
             'reg_time' => date("d-m-Y H:i:s", $this->userinfo['reg_time']),
-            'byurl' => $this->userinfo['byurl'],
             'last_time' => date("d-m-Y H:i:s", $this->userinfo['last_time']),
-            'user_groups' => $this->usergroups,
+            'usergroups' => $this->usergroups,
             'groups' => $this->groups->getAllArr(),
-            'servers' => $this->server->getAll()
+            'servers' => $this->server->getAll(),
+            'maxgroup' => $this->permissions->getMaxUserGroup($this->usergroups)
         );
 
-        $this->tpl->compile('profile/profile', $profile, 'Профиль ' . $this->common->getLogin());
+        if(isset($this->userinfo['byurl']) && !empty($this->userinfo['byurl']))
+            $profile['inviter'] = $this->user->getLogin($this->userinfo['byurl']);
+
+        $this->tpl->compile('profile/profile', array('profile' => $profile), 'Профиль ' . $this->userinfo['login']);
     }
 
     public function view($login)

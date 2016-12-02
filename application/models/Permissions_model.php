@@ -31,7 +31,7 @@ class Permissions_model extends CI_Model {
 
     public function getMaxUserGroup($usergroups)
     {
-        $maxgroup = "Player";
+        $maxgroup = "Игрок";
         foreach ($usergroups as $row)
         {
             if($row['group'] == 'Ultima'){

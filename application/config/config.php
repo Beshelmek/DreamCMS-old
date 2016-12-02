@@ -8,7 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | URL вашего домена включая протокол и / на конце
 | Например: https://dreamcraft.su/
 */
-$config['base_url'] = 'https://dreamcraft.su/';
+$config['base_url'] = 'https://test.dreamcraft.su/';
 
 /*
 |--------------------------------------------------------------------------

@@ -8,22 +8,20 @@ class Shop_model extends CI_Model {
         $this->load->model(array('server_model' => 'server'));
     }
 
-    public function getAllItems(){
-        $query = $this->db->get('dc_shop_items');
+    public function getAllItems($shop){
+        $query = $this->db->get('dc_shop_' . strtolower($shop));
         $arr = $query->result_array();
-
         return $arr;
     }
 
-    public function getSomeItems(){
-        $query = $this->db->get_where('dc_shop_items', array('category' => 'thaumcraft'));
+    public function getSomeItems($shop){
+        $query = $this->db->get_where('dc_shop_' . strtolower($shop), array('category' => 'thaumcraft'));
         $arr = $query->result_array();
-
         return $arr;
     }
 
-    public function getItems(){
-        $query = $this->db->query("SELECT * FROM dc_shop_items WHERE price > 0");
+    public function getItems($shop){
+        $query = $this->db->get_where('dc_shop_' . strtolower($shop), array('price' => '>0'));
         $arr = $query->result_array();
         foreach($arr as $key => $value){
             if($value['damage'] != 0){
@@ -36,8 +34,8 @@ class Shop_model extends CI_Model {
         return $arr;
     }
 
-    public function getItem($id){
-        $query = $this->db->get_where('dc_shop_items', array('id' => $id), 1);
+    public function getItem($id, $shop){
+        $query = $this->db->get_where('dc_shop_' . strtolower($shop), array('id' => $id), 1);
         $arr = $query->row_array();
         if($arr['damage'] != 0){
             $arr['image'] = '/uploads/items/' . $arr['type'] . '@' . $arr['damage'] . '.PNG';
@@ -47,29 +45,33 @@ class Shop_model extends CI_Model {
         return $arr;
     }
 
-    public function addItem($server, $itemid, $name, $price, $dprice, $image, $active = 1){
-        $server = strtolower($server);
+    public function addItem($shop, $itemtype, $damage, $dname, $sname, $price, $dprice, $discount = 0, $category = 'main'){
+        $shop = strtolower($shop);
         $data = array(
-            'item_id' => $itemid,
-            'name' => $name,
+            'dname' => $dname,
+            'type' => $itemtype,
+            'damage' => $damage,
+            'sname' => $sname,
             'price' => $price,
             'dprice' => $dprice,
-            'image' => $image,
-            'active' => $active
+            'discount' => $discount,
+            'category' => $category
         );
-        $this->db->insert('dc_shop_' . $server, $data);
+        $this->db->insert('dc_shop_' . $shop, $data);
     }
 
-    public function editItem($server, $id, $itemid, $name, $price, $dprice, $image, $active = 1){
-        $server = strtolower($server);
+    public function editItem($shop, $id, $itemtype, $damage, $dname, $sname, $price, $dprice, $discount = 0, $category = 'main'){
+        $shop = strtolower($shop);
         $data = array(
-            'item_id' => $itemid,
-            'name' => $name,
+            'dname' => $dname,
+            'type' => $itemtype,
+            'damage' => $damage,
+            'sname' => $sname,
             'price' => $price,
             'dprice' => $dprice,
-            'image' => $image,
-            'active' => $active
+            'discount' => $discount,
+            'category' => $category
         );
-        $this->db->update('dc_shop_' . $server, $data, array('id' => $id), 1);
+        $this->db->update('dc_shop_' . $shop, $data, array('id' => $id), 1);
     }
 }

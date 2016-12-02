@@ -6,7 +6,6 @@ class Shop extends DCMS_Controller {
     {
         parent::__construct();
         $this->load->model(array('shop_model' => 'shop', 'economy_model' => 'economy', 'cart_model' => 'cart', 'server_model' => 'server', 'page_model' => 'page', 'permissions_model' => 'permissions'));
-
         $this->checkAuth(true);
     }
 
@@ -20,13 +19,13 @@ class Shop extends DCMS_Controller {
         $discount = false;
 
         if(isset($id) && !empty($id)){
-            $item = $this->shop->getItem($id);
+            $item = $this->shop->getItem($id, $shop);
             if(!$item['id']){
-                show_404();
+                $this->tpl->show_404();
             }
             $this->tpl->compile('shop/buy', array('item' => $item), 'Покупка товара');
         }else{
-            $items = $this->shop->getItems();
+            $items = $this->shop->getItems($shop);
             if($group == 'Ultima' || $group == 'Deluxe') {
                 foreach ($items as $key => $value) {
                     if ($group == 'Ultima') {

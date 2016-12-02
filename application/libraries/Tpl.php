@@ -9,23 +9,27 @@ class Tpl {
     {
         $this->CI =& get_instance();
         $this->CI->load->model('server_model', 'server');
+        $this->CI->load->model('user_model', 'user');
     }
 
-    public function compile($name, $data = array(), $stitle = '')
+    public function compile($name, $data = array(), $userinfo = array(), $stitle = '')
     {
         $template = $this->CI->dbconfig->template;
+
         if(empty($stitle)) $stitle = $this->CI->dbconfig->site_title;
+        if(!(is_array($userinfo) && count($userinfo) > 0)) $userinfo = $this->CI->user->getAll($this->CI->common->getUUID());
+
         $data['stitle'] = $stitle;
 
-        $data['tpl'] = config_item('base_url') . 'templates/' . $template . '/';
-
-        $data['login'] = $this->CI->common->getLogin();
-        $data['uuid'] = $this->CI->common->getUUID();
+        $data['tpl'] = config_item('base_url') . 'templates/' . $template;
         $data['logged'] = $this->CI->common->isLogged();
-
         $data['monitoring'] = $this->genMonitor();
 
-        $data['isadmin'] = in_array($data['uuid'], $this->CI->dbconfig->admins);
+        if($data['logged']){
+            $data['userinfo']['admin'] = in_array($userinfo['uuid'], $this->CI->dbconfig->admins);
+        }else $data['userinfo']['admin'] = false;
+
+        $data['userinfo'] = $userinfo;
 
         $data['meta'] = array(
             'description' => $this->CI->dbconfig->site_desc,
@@ -42,21 +46,25 @@ class Tpl {
         $data['color_opt']   = $this->CI->server->selectColor('f');
         $data['server_opt']  = $this->CI->server->selectServer();
 
-        $this->CI->load->view($template . '/header', $data);
-        $this->CI->load->view($template . '/' . $name,    $data);
-        $this->CI->load->view($template . '/footer', $data);
+        $data['version']  = rand(0, PHP_INT_MAX);
+
+        $data['dbconfig']  = $this->CI->dbconfig;
+
+        $this->CI->load->view($template . '/pattern/header', $data);
+        $this->CI->load->view($template . '/pattern/' . $name,    $data);
+        $this->CI->load->view($template . '/pattern/footer', $data);
     }
 
     public function show_404(){
         header("HTTP/1.0 404 Not Found");
         $this->compile('errors/404', array(), 'Не найдено - Ошибка 404');
-        die($this->output->get_output());
+        die($this->CI->output->get_output());
     }
 
     public function show_error($header, $message){
         header("HTTP/1.0 500 Application error");
         $this->compile('errors/custom', array('header' => $header, 'message' => $message), 'Произошла ошибка');
-        die($this->output->get_output());
+        die($this->CI->output->get_output());
     }
 
     public function genMonitor(){
@@ -73,40 +81,29 @@ class Tpl {
                 $serveronline = intval($server['online']);
                 $servermaxonline = intval($server['maxonline']);
 
-                /*if($serveronline < 3 && $serveronline > 0){
-                    $serveronline = $serveronline - 1;
-                }*/
-
                 $curonline = intval($curonline) + $serveronline;
                 $curmaxonline = intval($curmaxonline) + $servermaxonline;
 
+                $percent = round(($server['online'] / $server['maxonline']) * 100);
 
-                $content .= '<h3 class="heading-xs">
-                            <a href="/page/'.$server['name'].'">'.$server['name'].'</a>
-                            <span class="pull-right color-green">'.$serveronline . ' / ' . $servermaxonline .'</span>
-                        </h3>
-                        <div class="progress progress-u progress-xxs">
-                            <div style="width: '. round(($server['online'] / $server['maxonline']) * 100) .'%" role="progressbar" class="progress-bar progress-bar-green"></div>
-                        </div>';
+                $content .= '<h5 class="heading-xs"> <a href="/page/'.$server['name'].'">'.$server['name'].'</a>
+                                <span class="pull-right color-green">'.$serveronline . ' / ' . $servermaxonline .'</span>
+                            </h5>
+                            <progress class="progress progress-info" value="'.$percent.'" max="100">'.$percent.'</progress>
+                            ';
             } else {
-                $content .= '<h3 class="heading-xs">
-                            '.$server['name'].'
-                            <span class="pull-right color-red">Выключен</span>
-                        </h3>
-                        <div class="progress progress-u progress-xxs">
-                            <div style="width: 100%" role="progressbar" class="progress-bar progress-bar-red"></div>
-                        </div>';
+                $content .= '<h5 class="heading-xs">'.$server['name'].'
+                                <span class="pull-right color-red">Выключен</span>
+                            </h5>
+                        <progress class="progress progress-danger" value="100" max="100">0%</progress>';
             }
 
         }
 
         $content .= '<div class="tt">
-                        <h3 class="heading-xs"><i class="fa fa-group"></i>Общий онлайн
-                            <span class="pull-right">'. $curonline . '/' . round($curmaxonline) .'</span></h3>
-                        <div class="progress progress-u progress-xxs margin-bottom-40">
-                            <div style="width: '. round(($curonline / $curmaxonline) * 100) .'%" role="progressbar" class="progress-bar progress-bar-dark">
-                            </div>
-                        </div>
+                        <h5 class="heading-xs"><i class="fa fa-group"></i>Общий онлайн
+                            <span class="pull-right">'. $curonline . '/' . round($curmaxonline) .'</span></h5>
+                        <progress class="progress progress-info" value="'. round(($curonline / $curmaxonline) * 100) .'" max="100"></progress>
                     </div>';
 
         return $content;
