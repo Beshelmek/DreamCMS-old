@@ -41,8 +41,21 @@ class Auth extends DCMS_Controller {
             $this->common->showError(implode("</br>", $err));
         }
 
+        if(valid_email($login) && $this->auth->checkEmail($login)){
+            $login = $this->db->get_where('dc_members', array('email' => $login), 1)->row_array()['login'];
+        }
+
         if($this->auth->checkUser($login, $pass)) {
             $data = $this->auth->userInfo($login);
+
+            if($this->config->item('ipb_integration')){
+                require_once(APPPATH . 'third_party/IPBForumIntegrate.php');
+                $ipb = new IPBForumIntegrate(FCPATH . 'forum');
+                $user = $ipb->getUser($data['email']);
+                if(!(is_array($user) && count($user) > 0)){
+                    $ipb->registerUser($data['login'], $data['email'], $pass, $data['reg_time']);
+                }
+            }
 
             if(isset($data['ga_secret']) && !empty($data['ga_secret'])){
                 $this->session->set_flashdata('auth_uuid', $data['uuid']);
@@ -62,6 +75,8 @@ class Auth extends DCMS_Controller {
                     'ip' => $this->input->ip_address(),
                     'login' => $data['login']
                 ));
+
+
 
                 $this->common->showOK('Вы успешно вошли!', array(
                     'reload' => 'false'
@@ -183,6 +198,7 @@ class Auth extends DCMS_Controller {
         $log['login'] = $this->input->post('login');
         $log['pass'] =  $this->input->post('pass');
         $log['rpass'] =  $this->input->post('rpass');
+        $log['email'] =  $this->input->post('email');
         $log['key'] =  $this->input->post('g-recaptcha-response');
         $log['ip'] =  $this->input->ip_address();
         $log['byurl'] =  $this->input->cookie('refer');
@@ -212,17 +228,17 @@ class Auth extends DCMS_Controller {
             $err[] = 'Пароль и повтор пароля не совпадают!';
         }
 
-        /*if(!valid_email($log['email'])){
+        if(!valid_email($log['email'])){
             $err[] = 'Не валидная почта! Введите реальную почту!';
-        }*/
+        }
 
         if($this->auth->checkLogin($log['login'])){
             $err[] = "Игрок с таким ником уже зарегистрирован!";
         }
 
-        /*if($this->auth->checkEmail($log['email'])){
+        if($this->auth->checkEmail($log['email'])){
             $err[] = "Игрок с этой почтой уже есть!";
-        }*/
+        }
 
         if(count($err) < 1) {
             $myCurl = curl_init();
@@ -244,8 +260,17 @@ class Auth extends DCMS_Controller {
         }
 
         if(count($err) < 1){
-            if($this->auth->registerUser($log['login'], $log['pass'], $log['ip'], $log['byurl'])){
+            if($this->auth->registerUser($log['login'], $log['pass'], $log['ip'], $log['byurl'], $log['email'])){
                 $data = $this->auth->userInfo($log['login']);
+
+                if($this->config->item('ipb_integration')){
+                    require_once(APPPATH . 'third_party/IPBForumIntegrate.php');
+                    $ipb = new IPBForumIntegrate(FCPATH . 'forum');
+                    $user = $ipb->getUser($data['email']);
+                    if(!(is_array($user) && count($user) > 0)){
+                        $ipb->registerUser($data['login'], $data['email'], $log['pass'], $data['reg_time']);
+                    }
+                }
 
                 $ses_data = array(
                     'login' => $data['login'],
@@ -339,6 +364,16 @@ class Auth extends DCMS_Controller {
         
         if(count($err) < 1){
             if($this->auth->setEmail($log['login'], $log['email'])){
+
+                if($this->config->item('ipb_integration')){
+                    require_once(APPPATH . 'third_party/IPBForumIntegrate.php');
+                    $ipb = new IPBForumIntegrate(FCPATH . 'forum');
+                    $user = $ipb->getUser($this->userinfo['email']);
+                    if(is_array($user) && count($user) > 0){
+                        $ipb->updateEmail($user['member_id'], $log['email']);
+                    }
+                }
+
                 return array();
             }else{
                 return array('Что-то пошло не так. Ошибка базы данных!');
@@ -378,6 +413,16 @@ class Auth extends DCMS_Controller {
 
         if(count($err) < 1){
             if($this->auth->setPassword($log['login'], $log['newpass'])){
+
+                if($this->config->item('ipb_integration')){
+                    require_once(APPPATH . 'third_party/IPBForumIntegrate.php');
+                    $ipb = new IPBForumIntegrate(FCPATH . 'forum');
+                    $user = $ipb->getUser($this->userinfo['email']);
+                    if(is_array($user) && count($user) > 0){
+                        $ipb->updatePassword($user['member_id'], $log['newpass']);
+                    }
+                }
+
                 return array();
             }else{
                 return array('Что-то пошло не так. Ошибка базы данных!');
@@ -453,6 +498,16 @@ class Auth extends DCMS_Controller {
         if(!empty($key)){
             $login = $this->auth->validateKey($key);
             if(isset($login) && !empty($login)){
+
+                if($this->config->item('ipb_integration')){
+                    require_once(APPPATH . 'third_party/IPBForumIntegrate.php');
+                    $ipb = new IPBForumIntegrate(FCPATH . 'forum');
+                    $user = $ipb->getUser($login['email']);
+                    if(is_array($user) && count($user) > 0){
+                        $ipb->updatePassword($user['member_id'], $login['newpass']);
+                    }
+                }
+
                 $this->logger->log('send_pass_new', $login['uuid'], array(
                     'ip' => $this->input->ip_address(),
                     'key' => $key

@@ -9,6 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Например: https://dreamcraft.su/
 */
 $config['base_url'] = 'https://test.dreamcraft.su/';
+$config['ipb_integration'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,7 +70,7 @@ $config['csrf_token_name'] = 'csrf';
 $config['csrf_cookie_name'] = 'csrf';
 $config['csrf_expire'] = 7200;
 $config['csrf_regenerate'] = FALSE;
-$config['csrf_exclude_uris'] = array('payments/[a-z]+', 'top/[a-z]+', 'launcher/[a-z]+', 'telegram/', 'telegram/*');
+$config['csrf_exclude_uris'] = array('payments/[a-z]+', 'top/[a-z]+', 'launcher/[a-z]+', 'shop/[a-z]+/[0-9]+' , 'telegram/', 'telegram/*');
 
 /*
 |--------------------------------------------------------------------------

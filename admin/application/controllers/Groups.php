@@ -22,7 +22,7 @@ class Groups extends Admin_Controller {
     private function genTableGroups(){
         $this->load->model('groups_model', 'groups');
 
-        $garr = $this->groups->getAllArr();
+        $garr = $this->groups->getOrderGroups();
         $parr = $this->groups->getAllPermissions();
 
         $content = '

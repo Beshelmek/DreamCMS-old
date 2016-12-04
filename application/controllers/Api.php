@@ -20,7 +20,17 @@ class API extends DCMS_Controller {
     }
 
     public function test(){
-        $this->region->getRegionByName('HiTech', 'spawn');
+        die();
+        if($this->config->item('ipb_integration')){
+            require_once(APPPATH . 'third_party/IPBForumIntegrate.php');
+            $ipb = new IPBForumIntegrate(FCPATH . 'forum');
+
+            $users = $this->db->get('dc_members')->result_array();
+            foreach ($users as $user){
+                $ipb->registerUser($user['login'], $user['email'], $user['password'], $user['reg_time']);
+                echo $user['login'] . '</br>';
+            }
+        }
     }
 
     /*public function test(){
@@ -57,7 +67,7 @@ class API extends DCMS_Controller {
         }
     }*/
 
-    public function syncperm(){
+    /*public function syncperm(){
         $q = $this->db->get('dc_usergroups');
         $na = $q->result_array();
 
@@ -86,6 +96,6 @@ class API extends DCMS_Controller {
                 'value' => $nowarr['expire']
             ));
         }
-    }
+    }*/
 
 }

@@ -1,3 +1,57 @@
+<div class="modal fade modal-ext" id="modal-register" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3><i class="fa fa-user"></i> Регистрация:</h3>
+            </div>
+            <div class="modal-body">
+                <form id="auth-register">
+                    <?=$fcsrf?>
+                    <div class="md-form">
+                        <i class="fa fa-user prefix"></i>
+                        <input type="text" name="login" id="form2" class="form-control">
+                        <label for="form2">Ваш логин</label>
+                    </div>
+
+                    <div class="md-form">
+                        <i class="fa fa-envelope prefix"></i>
+                        <input type="text" name="email" id="form2" class="form-control">
+                        <label for="form2">Ваша почта</label>
+                    </div>
+
+                    <div class="md-form">
+                        <i class="fa fa-lock prefix"></i>
+                        <input type="password" name="pass" id="form3" class="form-control">
+                        <label for="form3">Ваш пароль</label>
+                    </div>
+
+                    <div class="md-form">
+                        <i class="fa fa-lock prefix"></i>
+                        <input type="password" name="rpass" id="form4" class="form-control">
+                        <label for="form4">Повторите пароль</label>
+                    </div>
+
+                    <div class="md-form">
+                        <div id="g-recaptcha" class="g-recaptcha" data-sitekey="6Lcz2BATAAAAAPHlYDchnmwwNtIG0JbM3IJNkTl7"></div>
+                    </div>
+                </form>
+
+                <div class="text-xs-center">
+                    <!--<fieldset class="form-group">
+                        <input type="checkbox" id="checkbox1" name="autoenter" checked>
+                        <label for="checkbox1">Войти автоматически</label>
+                    </fieldset>-->
+
+                    <button class="btn btn-primary btn-lg" onclick="ajaxAction('/auth/register', $('#auth-register').serializeArray())">Зарегистрироваться</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 </div>
     <div class="col-md-4">
         <?if($logged): ?>
@@ -11,8 +65,13 @@
                             <ul class="list-unstyled panel-menu">
                                 <div class="list-group">
                                     <a href="#" class="list-group-item active">У вас: <?=$userinfo['realmoney']?> руб. и <?=$userinfo['money']?> монет</a>
-                                    <a href="#" class="list-group-item"><i class="fa fa-plus"></i> Пополнить счет</a>
-                                    <a href="/vk" class="list-group-item"><i class="fa fa-vk"></i> Привязать ВКонтакте</a>
+
+                                    <a href="#" type="button" data-toggle="modal" data-target="#donate-modal" class="list-group-item">
+                                        <i class="fa fa-plus"></i> Пополнить счет
+                                    </a>
+                                    <?if($userinfo['vk_uid'] == 0):?>
+                                        <a href="/vk" class="list-group-item"><i class="fa fa-vk"></i> Привязать ВКонтакте</a>
+                                    <? endif;?>
                                     <a href="/profile" class="list-group-item"><i class="fa fa-user"></i> Личный кабинет</a>
                                     <a href="/refer" class="list-group-item"><i class="fa fa-group"></i> Реферальная система</a>
                                     <a href="/shop" class="list-group-item"><i class="fa fa-shopping-cart"></i> Магазин блоков</a>
@@ -50,7 +109,7 @@
                 </div>
                 <div class="modal-footer">
                     <div class="options">
-                        <p>Еще не игрок?<a href="/auth/register"> Зарегистрируйся!</a></p>
+                        <p>Еще не игрок?<a href="/page/start"> Начать!</a></p>
                         <p>Забыли <a href="/auth/sendpass">пароль?</a></p>
                     </div>
                 </div>
@@ -78,10 +137,6 @@
 
 <!--Footer-->
 <footer class="page-footer center-on-small-only">
-    <!--Call to action-->
-    <center><a target="_blank" href="/" class="btn btn-info waves-effect waves-light">На главную</a></center>
-    <!--/.Call to action-->
-
     <!--Copyright-->
     <div class="footer-copyright">
         <div class="container-fluid">

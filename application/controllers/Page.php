@@ -34,7 +34,7 @@ class Page extends DCMS_Controller {
 	private function genTableGroups(){
 		$this->load->model('groups_model', 'groups');
 
-		$garr = $this->groups->getAllArr();
+		$garr = $this->groups->getOrderGroups();
 		$parr = $this->groups->getAllPermissions();
 
 		$content = '<table class="features-table">

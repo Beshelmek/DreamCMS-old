@@ -13,6 +13,11 @@ class Groups_model extends CI_Model {
         return $query->result_array();
     }
 
+    public function getOrderGroups(){
+        $query = $this->db->get_where('dc_groups', array('active' => 1, 'order' => 1, 'price >' => 0));
+        return $query->result_array();
+    }
+
     public function getAllPermissions(){
         return array(
             'wg_regions' => 'Кол-во приватов {text}',

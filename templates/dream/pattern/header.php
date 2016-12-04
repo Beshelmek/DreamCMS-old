@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="en"><head>
+    <title><?=$stitle?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title><?=$stitle?></title>
+
+    <meta name="description" content="<?=$meta['description']?>">
+    <meta name="keywords" content="<?=$meta['keywords']?>">
+    <meta name="generator" content="<?=$meta['generator']?>">
 
     <link rel="stylesheet" href="<?=$tpl?>/css/font-awesome.min.css?v=5">
     <link href="<?=$tpl?>/css/bootstrap.min.css?v=5" rel="stylesheet">
@@ -222,5 +226,37 @@
 
 <!--Content-->
 <div class="container">
+    <?if($logged):?>
+    <div class="modal fade" id="donate-modal" tabindex="-1" role="dialog" aria-labelledby="donate-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="donate-label">Пополнение счета</h4>
+                </div>
+                <form class="form-horizontal" action="https://unitpay.ru/pay/39791-30737" style="margin:10px">
+                    <div class="modal-body">
+                        <h2 class="heading-md">Мы принимаем:</h2>
+                        <p>Visa, MasterCard, ЯндексДеньги, Qiwi и множество других систем.</p>
+
+                        <div class="md-form input-group">
+                            <span class="input-group-addon">Введите сумму:</span>
+                            <input name="sum" value="320" style="padding-left: 10px;width: 23rem;" required pattern="\d*" type="text" class="form-control" aria-label="Рублей">
+                            <span class="input-group-addon">₽</span>
+                        </div>
+
+                        <input type="hidden" name="account" value="<?=$userinfo['uuid']?>">
+                        <input type="hidden" name="desc" value="Пополнение счета игрока <?=$userinfo['login']?>">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Перейти к оплате</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <?endif;?>
     <div class="row">
         <div class="col-md-8">

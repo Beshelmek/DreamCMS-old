@@ -1,6 +1,5 @@
 <?php
 class Auth_model extends CI_Model {
-
     protected $CI;
 
     public function __construct()
@@ -9,8 +8,11 @@ class Auth_model extends CI_Model {
         $this->CI =& get_instance();
     }
 
-    public function registerUser($login, $pass, $ip = '0.0.0.0', $byurl = 'Admin', $email = ''){
-        if(empty($email)) $email = $login . '@' . $this->CI->dbconfig->email_domain;
+    public function registerUser($login, $pass, $ip = '0.0.0.0', $byurl = NULL, $email = ''){
+        if($byurl != NULL && isset($byurl) && !empty($byurl)){
+            $byurl = $this->CI->user->getAll($byurl)['uuid'];
+        }
+
         $data = array(
             'login' => $login,
             'password' => md5(sha1($pass)),
@@ -42,14 +44,6 @@ class Auth_model extends CI_Model {
             'bonus' => $bonus,
         );
         $this->db->insert('dc_refer', $data);
-
-        if($bonus == 'mcrate9'){
-            $this->db->insert('dc_bonus', array(
-                'uuid' => $uuid,
-                'time' => time(),
-                'sum' => 50
-            ));
-        }
     }
 
     public function setPassword($login, $pass){
@@ -207,6 +201,7 @@ class Auth_model extends CI_Model {
                 $this->db->where('login', $row['login']);
                 $this->db->update('dc_members', array('sendkey' => ''));
 
+                $row['newpass'] = $newpass;
                 return $row;
             }
         }

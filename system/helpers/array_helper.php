@@ -113,3 +113,19 @@ if ( ! function_exists('elements'))
 		return $return;
 	}
 }
+
+if (!function_exists('only_unique_tags'))
+{
+    function only_unique_tags($items, $tag)
+    {
+        $tags = array();
+        foreach ($items as $key=>$item){
+            if(in_array($item[$tag], $tags)){
+                unset($items[$key]);
+            }else{
+                $tags[] = $item[$tag];
+            }
+        }
+        return $items;
+    }
+}

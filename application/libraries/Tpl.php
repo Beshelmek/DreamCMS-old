@@ -25,11 +25,11 @@ class Tpl {
         $data['logged'] = $this->CI->common->isLogged();
         $data['monitoring'] = $this->genMonitor();
 
+        $data['userinfo'] = $userinfo;
+
         if($data['logged']){
             $data['userinfo']['admin'] = in_array($userinfo['uuid'], $this->CI->dbconfig->admins);
         }else $data['userinfo']['admin'] = false;
-
-        $data['userinfo'] = $userinfo;
 
         $data['meta'] = array(
             'description' => $this->CI->dbconfig->site_desc,

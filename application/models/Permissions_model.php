@@ -5,6 +5,7 @@ class Permissions_model extends CI_Model {
     {
         parent::__construct();
         $this->load->database();
+        $this->load->helper('array');
     }
 
     public function canSetPrefix($uuid, $server)
@@ -16,6 +17,24 @@ class Permissions_model extends CI_Model {
         $q = $this->db->get_where('dc_usergroups', array('uuid' => $uuid, 'group' => 'Ultima', 'server' => $server), 1);
         if($q->num_rows() > 0){
             return TRUE;
+        }
+        return FALSE;
+    }
+
+    public function hasPerm($uuid, $perm){
+        $this->db->select('*');
+        $this->db->from('dc_usergroups');
+        $this->db->where(array(
+            'dc_usergroups.uuid' => $uuid
+        ));
+
+        $this->db->join('dc_groups', 'dc_groups.name = dc_usergroups.group');
+        $groups = $this->db->get()->result_array();
+
+        $groups = only_unique_tags($groups, 'pexname');
+        foreach ($groups as $group){
+            $arr = json_decode($group['site_pex'], true);
+            if(in_array($perm, $arr)) return TRUE;
         }
         return FALSE;
     }

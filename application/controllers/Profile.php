@@ -18,7 +18,7 @@ class Profile extends DCMS_Controller {
             'reg_time' => date("d-m-Y H:i:s", $this->userinfo['reg_time']),
             'last_time' => date("d-m-Y H:i:s", $this->userinfo['last_time']),
             'usergroups' => $this->usergroups,
-            'groups' => $this->groups->getAllArr(),
+            'groups' => $this->groups->getOrderGroups(),
             'servers' => $this->server->getAll(),
             'maxgroup' => $this->permissions->getMaxUserGroup($this->usergroups)
         );
@@ -174,7 +174,7 @@ class Profile extends DCMS_Controller {
 
         $err = array();
 
-        if(empty($group['name'])){
+        if(empty($group['name']) || $group['order'] == 0){
             $err[] = "Такой привилегии не существует!";
         }
 

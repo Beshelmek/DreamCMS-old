@@ -21,7 +21,7 @@ class Shop_model extends CI_Model {
     }
 
     public function getItems($shop){
-        $query = $this->db->get_where('dc_shop_' . strtolower($shop), array('price' => '>0'));
+        $query = $this->db->get_where('dc_shop_' . strtolower($shop), array('price >' => '0'));
         $arr = $query->result_array();
         foreach($arr as $key => $value){
             if($value['damage'] != 0){
@@ -37,6 +37,7 @@ class Shop_model extends CI_Model {
     public function getItem($id, $shop){
         $query = $this->db->get_where('dc_shop_' . strtolower($shop), array('id' => $id), 1);
         $arr = $query->row_array();
+        $arr['shop'] = $shop;
         if($arr['damage'] != 0){
             $arr['image'] = '/uploads/items/' . $arr['type'] . '@' . $arr['damage'] . '.PNG';
         }else{

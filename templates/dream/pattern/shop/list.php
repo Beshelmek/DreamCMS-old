@@ -10,6 +10,40 @@
         margin-bottom: 15px;
     }
 </style>
+
+<div class="modal fade" id="block-modal" tabindex="-1" role="dialog" aria-labelledby="block-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="block-label">Покупка блока</h4>
+            </div>
+            <div id="block-ajax">
+                <div class="modal-body">
+                    <center>
+                        <div class="preloader-wrapper big active">
+                            <div class="spinner-layer spinner-blue-only">
+                                <div class="circle-clipper left">
+                                    <div class="circle"></div>
+                                </div><div class="gap-patch">
+                                    <div class="circle"></div>
+                                </div><div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </center>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="panel panel-profile profile">
     <div class="panel-heading overflow-h">
         <div class="row">
@@ -42,12 +76,30 @@
                     <div class="row"><span><?=$item['price']?> руб.\шт</span></div>
                     <div class="row"><span><?=$item['dprice']?> дрим.\шт</span></div>
                 <?php endif; ?>
-                    <div class="row"><a href="/shop/<?=$shop?>/<?=$item['id']?>" class="btn btn-primary">Купить</a></div>
+                    <div class="row"><a block-id="<?=$item['id']?>" block-shop="<?=$shop?>" data-toggle="modal" data-target="#block-modal" class="btn btn-primary">Купить</a></div>
                 </div>
             <?php endforeach; ?>
     </div>
 </div>
 <script>
+    $('#block-modal').on('show.bs.modal', function (e) {
+        var btn = e.relatedTarget;
+        var id = $(btn).attr('block-id');
+        var shop = $(btn).attr('block-shop');
+
+        setTimeout(function () {
+            $.post("/shop/" + shop + "/" + id, function( data ) {
+                $("#block-ajax").html(data);
+            });
+        }, 1000);
+    });
+
+    $('#block-modal').on('hide.bs.modal', function (e) {
+        $("#block-ajax").html('<div class="modal-body"> <center> <div class="preloader-wrapper big active"> <div class="spinner-layer spinner-blue-only"> <div class="circle-clipper left"> <div class="circle"></div> </div><div class="gap-patch"> <div class="circle"></div> </div><div class="circle-clipper right"><div class="circle"></div> </div> </div> </div> </center> </div> <div class="modal-footer"> <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button> </div>');
+    });
+
+
+
     $("#shop-search").change(function(){
         var find = $(this).val();
         $(".item-block").hide();

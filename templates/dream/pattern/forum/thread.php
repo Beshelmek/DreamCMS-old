@@ -14,14 +14,14 @@
                             <a ajax-url="true" href="/forum/topic/<?=$topic['id']?>" class="btn btn-info btn-xs" type="button" style="padding: 1px 5px;"><?=$topic['msg_count']?></a>
                         <?php endif; ?>
                         <?php if ($topic['active'] == 0): ?>
-                            <a ajax-url="true" href="/forum/topic/<?=$topic['id']?>" class="btn btn-xs" type="button" style="padding: 1px 5px;"><?=$topic['msg_count']?></a>
+                            <a ajax-url="true" href="/forum/topic/<?=$topic['id']?>" class="btn btn-primary btn-xs" type="button" style="padding: 1px 5px;"><?=$topic['msg_count']?></a>
                         <?php endif; ?>
 
-                        <?php if ($isadmin || $topic['author'] == $uuid): ?>
+                        <?php if ($userinfo['admin'] || $topic['author'] == $userinfo['uuid']): ?>
                             <a onclick="ajaxAction('/forum/topic/<?=$topic['id']?>/delete', {<?=$csrf['name']?>: '<?=$csrf['hash']?>'})" class="btn btn-danger btn-xs" style="padding: 1px 5px;">Удалить</a>
                         <?php endif; ?>
 
-                        <?php if ($isadmin): ?>
+                        <?php if ($userinfo['admin']): ?>
                             <?php if ($topic['active'] == 1): ?>
                                 <a onclick="ajaxAction('/forum/topic/<?=$topic['id']?>/close', {<?=$csrf['name']?>: '<?=$csrf['hash']?>'})" class="btn btn-info btn-xs" style="padding: 1px 5px;">Закрыть</a>
                             <?php endif; ?>

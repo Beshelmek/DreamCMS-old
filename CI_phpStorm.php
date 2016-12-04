@@ -76,7 +76,8 @@ class CI_Controller extends my_models
 
 /**
  * @property CI_DB_active_record $db              This is the platform-independent base Active Record implementation class.
- * @property CI_DB_active_record $pex              This is the platform-independent base Active Record implementation class.
+ * @property CI_Controller $CI                    Controller class.
+ * @property CI_DB_active_record $pex             This is the platform-independent base Active Record implementation class.
  * @property CI_DB_forge $dbforge                 Database Utility Class
  * @property CI_Benchmark $benchmark              This class enables you to mark points and calculate the time difference between them.<br />  Memory consumption can also be displayed.
  * @property CI_Calendar $calendar                This class enables the creation of calendars

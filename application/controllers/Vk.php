@@ -43,14 +43,20 @@ class Vk extends DCMS_Controller
 
                 if (isset($user['response'][0]['uid'])) {
                     $user = $user['response'][0];
-                    $this->db->update('dc_members', array(
-                        'vk_uid' => $user['uid'],
-                        'vk_info' => json_encode($user)
-                    ), array(
-                        'uuid' => $this->userinfo['uuid']
-                    ), 1);
-                    $result = true;
-                    $this->tpl->show_error('Успешно!', 'Вы привязали свою страницу ВКонтакте!');
+
+                    $count = $this->db->get_where('dc_members', array('vk_uid' => $user['uid']))->num_rows();
+                    if($count > 0){
+                        $this->tpl->show_error('Ошибка!', 'Эта страница уже привязана к другому аккаунту!');
+                    }else{
+                        $this->db->update('dc_members', array(
+                            'vk_uid' => $user['uid'],
+                            'vk_info' => json_encode($user)
+                        ), array(
+                            'uuid' => $this->userinfo['uuid']
+                        ), 1);
+                        $result = true;
+                        $this->tpl->show_error('Успешно!', 'Вы привязали свою страницу ВКонтакте!');
+                    }
                 }
             }
         }

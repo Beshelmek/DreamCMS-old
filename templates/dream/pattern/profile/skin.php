@@ -6,34 +6,45 @@
         margin-right: 29px;
         margin-bottom: 15px;
     }
-    a.btn-u.skin-setup {
-        margin-top: 10px;
-    }
 </style>
-<div class="panel panel-profile profile">
-    <div class="panel-heading overflow-h">
-        <h2 class="panel-title heading-sm">
-            Загрузка скина\плаща
-        </h2>
-    </div>
-    <div class="panel-body" style="border-bottom: solid 3px #f7f7f7;">
-        <form enctype="multipart/form-data" action="/profile/upload" method="post">
-            <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
-            <span>Загрузить:</span><Br>
-            <input type="radio" name="type" value="skin"> Скин<Br>
-            <input type="radio" name="type" value="cloak"> Плащ<Br><Br>
+<div class="card card-block">
+    <h4 class="card-title">Загрузка скина</h4>
+    <span>Загрузить:</span><br>
+    <form enctype="multipart/form-data" action="/profile/upload" method="post">
+        <?=$fcsrf?>
+        <div class="row">
+            <fieldset class="form-group pull-left" style="margin-left: 1rem;">
+                <input name="type" value="skin" type="radio" id="skin">
+                <label for="skin">Скин</label>
+                &nbsp;&nbsp;
+                <input name="type" value="cloak" type="radio" id="cloak">
+                <label for="cloak">Плащ</label>
+            </fieldset>
+            <button type="submit" class="btn btn-primary pull-right">Загрузить</button>
+        </div>
 
-            <input type="file" name="userfile" accept="image/png"><Br>
-            <button type="submit" class="btn-u">Загрузить</button>
-        </form>
-    </div>
-    <div class="panel-body">
-        <h3>Выбрать из галереи:</h3>
-        <?php foreach($list as $skin): ?>
-            <div class="skin-block">
-                <img src="/skin/catalog/<?=$skin?>"></br>
-                <a href="/skin/set/<?=$skin?>" class="btn-u skin-setup">Установить</a>
+
+
+        <div class="file-field">
+            <div class="btn btn-primary btn-sm">
+                <span>Выберите файл</span>
+                <input type="file" name="userfile" accept="image/png">
             </div>
-        <?php endforeach; ?>
-    </div>
+            <div class="file-path-wrapper">
+                <input class="file-path validate" type="text" placeholder="Выберите файл">
+            </div>
+        </div>
+    </form>
 </div>
+
+<div class="card card-block">
+    <h4 class="card-title">Выбрать из галереи:</h4>
+    <span>Загрузить:</span><br>
+    <?php foreach($list as $skin): ?>
+        <div class="skin-block">
+            <center><img src="/skin/catalog/<?=$skin?>"></center></br>
+            <a href="/skin/set/<?=$skin?>" class="btn btn-primary">Установить</a>
+        </div>
+    <?php endforeach; ?>
+</div>
+

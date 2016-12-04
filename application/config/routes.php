@@ -60,3 +60,4 @@ $route['shop/(:any)'] = '/shop/server/$1';
 $route['cart/(:any)'] = '/cart/server/$1';
 $route['shop/(:any)/(:num)'] = '/shop/server/$1/$2';
 $route['s'] = '/page/view/start';
+$route['register'] = '/page/view/start';

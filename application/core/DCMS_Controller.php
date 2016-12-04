@@ -3,8 +3,8 @@
 class DCMS_Controller extends CI_Controller {
 
     public $userinfo;
+    public $forumuser;
     public $usergroups;
-    //public $dbconfig;
 
     public function __construct() {
         parent::__construct();
@@ -14,18 +14,16 @@ class DCMS_Controller extends CI_Controller {
         if($this->isAdmin($uuid)){
             //$this->output->enable_profiler(TRUE);
         }
-        //$this->dbconfig = $this->load->library('dbconfig');
 
         if(isset($uuid) && !empty($uuid)){
             $this->userinfo = $this->user->getAll($this->common->getUUID());
             $this->usergroups = $this->groups->allGroups($this->userinfo['uuid']);
 
-            /*$q = $this->db->get_where('dc_bonus', array('uuid' => $this->userinfo['uuid']), 1);
-            $row = $q->row_array();
-            if(isset($row['uuid'])){
-                $this->load->helper('cookie_helper');
-                set_cookie('dc_alert', 'Вы получите ваш бонус размером ' . $row['sum'] . ' руб. после того как проведете в игре 3 дня!', 10);
-            }*/
+            if($this->config->item('ipb_integration')){
+                require_once(APPPATH . 'third_party/IPBForumIntegrate.php');
+                $ipb = new IPBForumIntegrate(FCPATH . 'forum');
+                $this->forumuser = $ipb->getUser($this->userinfo['email']);
+            }
         }
         if($this->session->has_userdata('last_activity')) {
             if ($this->session->userdata('last_activity') < (time() - 300)) {
