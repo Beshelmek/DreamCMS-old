@@ -77,6 +77,8 @@ $view_folder = '';
 	// The name of THIS file
 	define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
 
+exit;
+
 	// Path to the system folder
 	define('BASEPATH', str_replace('\\', '/', $system_path));
 
